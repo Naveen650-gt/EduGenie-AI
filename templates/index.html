@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduGenie AI - Next-Gen Intelligent Learning Assistant</title>
+  <meta name="description" content="AI-powered educational learning assistant powered by Google Gemini. Ask questions, generate quizzes, explore roadmaps, and summarize notes.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+</head>
+<body>
+
+  <!-- Ambient Glow Background -->
+  <div class="glow-sphere sphere-1"></div>
+  <div class="glow-sphere sphere-2"></div>
+  <div class="glow-sphere sphere-3"></div>
+
+  <!-- NAVIGATION HEADER -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="brand-icon">✨</div>
+        <div class="brand-text">
+          <span class="brand-title">EduGenie<span class="brand-ai">.AI</span></span>
+          <span class="brand-badge">Gemini 3.5</span>
+        </div>
+      </div>
+      
+      <div class="nav-actions">
+        <div class="backend-status" id="backendStatus">
+          <span class="status-dot online"></span>
+          <span class="status-label">Backend Online</span>
+        </div>
+        <button type="button" id="themeToggle" class="icon-btn" title="Toggle Theme">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <button type="button" id="historyToggle" class="icon-btn" title="History">
+          <span>📜</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO BANNER -->
+  <header class="hero">
+    <div class="hero-content">
+      <div class="hero-chip">
+        <span class="chip-sparkle">⚡</span> Next-Generation Educational AI Platform
+      </div>
+      <h1 class="hero-title">
+        Empower Your Learning with <span class="gradient-text">Gemini Intelligence</span>
+      </h1>
+      <p class="hero-subtitle">
+        Instant explanations, custom practice quizzes, dynamic learning roadmaps, and intelligent study summaries designed for students and researchers.
+      </p>
+    </div>
+  </header>
+
+  <!-- MAIN APPLICATION GRID -->
+  <main class="main-wrapper">
+    <div class="app-layout">
+
+      <!-- LEFT COLUMN: STUDIO CONTROLS -->
+      <section class="glass-panel studio-panel">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <div class="panel-icon">💡</div>
+            <div>
+              <h2 class="panel-title">Learning Studio</h2>
+              <p class="panel-desc">Select a capability and enter your topic</p>
+            </div>
+          </div>
+          <button type="button" id="clearBtn" class="action-link-btn" title="Clear inputs">Reset</button>
+        </div>
+
+        <!-- Mode Navigation Tabs -->
+        <div class="task-tabs" role="tablist">
+          <button type="button" class="tab-btn active" data-task="qa" role="tab">
+            <span class="tab-icon">❓</span>
+            <span class="tab-label">Smart Q&A</span>
+          </button>
+          <button type="button" class="tab-btn" data-task="explain" role="tab">
+            <span class="tab-icon">💡</span>
+            <span class="tab-label">Explain</span>
+          </button>
+          <button type="button" class="tab-btn" data-task="quiz" role="tab">
+            <span class="tab-icon">🎯</span>
+            <span class="tab-label">Quiz Master</span>
+          </button>
+          <button type="button" class="tab-btn" data-task="summarize" role="tab">
+            <span class="tab-icon">📝</span>
+            <span class="tab-label">Summarize</span>
+          </button>
+          <button type="button" class="tab-btn" data-task="learn" role="tab">
+            <span class="tab-icon">🗺️</span>
+            <span class="tab-label">Roadmap</span>
+          </button>
+        </div>
+
+        <!-- Prompts & Presets -->
+        <div class="presets-section">
+          <div class="presets-header">
+            <span>✨ Quick Inspiration</span>
+          </div>
+          <div id="presetsList" class="presets-chips">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Dynamic Controls -->
+        <form id="aiForm" class="studio-form" onsubmit="return false;">
+          
+          <!-- Roadmap Level Selector -->
+          <div id="levelGroup" class="form-row" style="display: none;">
+            <label class="field-label" for="levelSelect">
+              <span>🎯 Target Mastery Level</span>
+            </label>
+            <div class="select-wrapper">
+              <select id="levelSelect" class="form-select">
+                <option value="beginner">🌱 Beginner (Foundational concepts & syntax)</option>
+                <option value="intermediate">🚀 Intermediate (Hands-on practical projects)</option>
+                <option value="advanced">🔥 Advanced (Deep architecture & optimization)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Quiz Question Count Selector -->
+          <div id="quizCountGroup" class="form-row" style="display: none;">
+            <label class="field-label" for="quizCountSelect">
+              <span>🔢 Number of Questions</span>
+            </label>
+            <div class="select-wrapper">
+              <select id="quizCountSelect" class="form-select">
+                <option value="3">3 Questions (Quick Sprint)</option>
+                <option value="5" selected>5 Questions (Standard Practice)</option>
+                <option value="8">8 Questions (Deep Mastery Test)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Main Input Area -->
+          <div class="form-row">
+            <div class="label-row">
+              <label id="inputLabel" class="field-label" for="inputText">Student Question or Topic</label>
+              <span id="charCount" class="char-count">0 chars</span>
+            </div>
+            <div class="textarea-wrapper">
+              <textarea 
+                id="inputText" 
+                class="form-textarea" 
+                placeholder="Ask any educational question or paste study material..." 
+                rows="6"
+                required
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="actions-row">
+            <button type="button" id="submitBtn" class="btn-glow-primary">
+              <span class="btn-sparkle">✨</span>
+              <span id="submitBtnText">Generate with Gemini</span>
+            </button>
+          </div>
+
+          <!-- Real-Time Status -->
+          <div id="statusBox" class="status-indicator">
+            <div class="pulse-spinner"></div>
+            <span id="statusMessage">EduGenie is thinking...</span>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- RIGHT COLUMN: AI RESPONSE & WORKSPACE -->
+      <section class="glass-panel output-panel">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <div class="panel-icon">🎓</div>
+            <div>
+              <h2 class="panel-title">EduGenie Insights</h2>
+              <p class="panel-desc" id="outputSubtitle">AI generated explanation & practice</p>
+            </div>
+          </div>
+          
+          <div class="output-actions">
+            <button type="button" id="speechBtn" class="action-icon-btn" title="Listen with Audio" disabled>
+              <span id="speechIcon">🔊</span>
+            </button>
+            <button type="button" id="copyBtn" class="action-icon-btn" title="Copy Output" disabled>
+              <span>📋</span>
+            </button>
+            <button type="button" id="downloadBtn" class="action-icon-btn" title="Download as Markdown / JSON" disabled>
+              <span>💾</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Output Content Area -->
+        <div id="resultContainer" class="result-viewport">
+          <div class="empty-state">
+            <div class="empty-icon-orbit">
+              <span class="center-gem">✨</span>
+            </div>
+            <h3 class="empty-title">EduGenie Workspace Ready</h3>
+            <p class="empty-desc">
+              Choose a task from the Studio, pick a prompt or write your own study question, and let Gemini AI curate personalized explanations and test materials.
+            </p>
+            <div class="feature-badges">
+              <span class="feat-badge">⚡ Instant AI Tutor</span>
+              <span class="feat-badge">🎯 Auto Quizzes</span>
+              <span class="feat-badge">🗺️ Roadmaps</span>
+              <span class="feat-badge">🔊 Audio Reader</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- RECENT HISTORY DRAWER -->
+  <aside id="historyDrawer" class="history-drawer">
+    <div class="drawer-header">
+      <h3>📜 Recent Learning Sessions</h3>
+      <button type="button" id="closeHistoryBtn" class="icon-btn">✕</button>
+    </div>
+    <div id="historyList" class="history-list">
+      <div class="empty-history">No queries saved yet. Generate answers to build your study history.</div>
+    </div>
+    <div class="drawer-footer">
+      <button type="button" id="clearHistoryBtn" class="btn-clear-history">Clear History</button>
+    </div>
+  </aside>
+  <div id="drawerOverlay" class="drawer-overlay"></div>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div id="toast" class="toast-card">
+    <span class="toast-icon">✨</span>
+    <span id="toastMsg" class="toast-text">Action completed successfully!</span>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <p><strong>EduGenie AI</strong> • Google Gemini Educational Assistant</p>
+      </div>
+      <div class="footer-right">
+        <a href="/health" target="_blank" class="footer-link">API Health</a>
+        <span class="sep">•</span>
+        <a href="/docs" target="_blank" class="footer-link">Swagger Docs</a>
+        <span class="sep">•</span>
+        <span class="footer-year">2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', path='app.js') }}"></script>
+</body>
+</html>
