@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
 
-const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://127.0.0.1:8000';
+function getBackendUrl(): string {
+  const url = process.env.FASTAPI_URL || process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://127.0.0.1:8000';
+  return url.replace(/\/$/, '');
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const res = await fetch(`${FASTAPI_URL}/learn/recommendations`, {
+    const backendUrl = getBackendUrl();
+    const res = await fetch(`${backendUrl}/learn/recommendations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
